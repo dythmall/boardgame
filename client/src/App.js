@@ -1,11 +1,13 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import logo from './logo.svg';
+import GameBoard from './GameBoard';
 import './App.css';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', password: ''};
+    this.state = {name: '', password: '', id: null};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
 
@@ -18,8 +20,29 @@ class App extends React.Component {
   }
 
   handleSubmit(event) {
-    this.login();
+    if(this.areFieldsCorrect()) {
+      this.login();
+    }
     event.preventDefault();
+  }
+
+  areFieldsCorrect() {
+    if (!this.state.name) {
+      this.printError('Please enter your name');
+      return false;
+    }
+
+    if (!this.state.password) {
+      this.printError('Please enter password');
+      return false;
+    }
+
+    return true;
+  }
+
+  printError(message) {
+    const element = <h3 style={{color: "red"}}>{message}</h3>;
+    ReactDOM.render(element, document.getElementById('error'));
   }
 
   login() {
@@ -29,8 +52,18 @@ class App extends React.Component {
     // get a callback when the server responds
     xhr.addEventListener('load', () => {
       // update the state of the component with the result here
-      console.log(xhr.responseText)
+      if (xhr.status === 401) {
+        this.printError('Wrong password!')
+      } else if (xhr.status === 409) {
+        this.printError(`${this.state.name} is already in use.`);
+      } else if (xhr.status === 200) {
+        console.log(xhr.responseText);
+        this.setState({
+          id: JSON.parse(xhr.responseText).id
+        })
+      }
     })
+
     // open the request with the verb and the url
     xhr.open('POST', 'http://localhost:9000/users')
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -42,6 +75,11 @@ class App extends React.Component {
   }
 
   render() {
+    if (this.state.id) {
+      return (
+        <GameBoard id={this.state.id}/>
+      )
+    }
     return (
       <div className="App">
         <header className="App-header">
@@ -55,6 +93,7 @@ class App extends React.Component {
             </label>
             <input type="submit" value="Submit" />
           </form>
+          <div id="error"></div>
         </header>
       </div>
     );

@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
+var socket = require('socket.io');
+
+const game = require('../routes/game');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +23,8 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+var io = socket(server);
+game.setSocket(io);
 
 /**
  * Listen on provided port, on all network interfaces.
