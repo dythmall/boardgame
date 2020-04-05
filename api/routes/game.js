@@ -2,7 +2,7 @@ const {v4} = require('uuid');
 const gameInit = require('./gameInit');
 
 let socket;
-const currentUsers = {};
+let currentUsers = {};
 const users = new Map();
 let gameState = 'waiting';
 let gameVariables = {};
@@ -65,7 +65,28 @@ const setSocket = (sock) => {
         s.on('start', () => {
             gameState = 'storyTeller';
             prepareGame();
-        })
+        });
+
+        s.on('end', () => {
+            gameState = 'waiting';
+            users.forEach(user => {
+                user.socket.emit('end');
+            });
+            users.clear();
+            currentUsers = {};
+            gameVariables = {};
+        });
+
+        s.on('game', (data) => {
+            if (gameState === 'storyTeller') {
+                gameVariables.storyTellerCard = data.selectedCard;
+                const storyTeller = users.get(s.gameId);
+                storyTeller.cards = storyTeller.cards.filter(card => card !== data.selectedCard)
+                storyTeller.cards.push(gameInit.takeCards(1, gameVariables.shuffledCards));
+                gameState = 'participants';
+                sendGameInfo();
+            }
+        });
     });
 };
 

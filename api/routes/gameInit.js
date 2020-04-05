@@ -27,7 +27,7 @@ const assignCards = (users, cards) => {
     })
 };
 
-const takeCards = (num, cards) => cards.splice(0, 5)
+const takeCards = (num, cards) => cards.splice(0, num)
 
 const initialize = (users, currentUsers) => {
     const gameVariables = new Map();
@@ -41,5 +41,6 @@ const initialize = (users, currentUsers) => {
 const createOrder = (users) => Object.keys(users);
 
 module.exports = {
-    initialize
+    initialize,
+    takeCards
 }

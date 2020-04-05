@@ -10,7 +10,7 @@ class App extends React.Component {
     this.state = {name: '', password: '', id: null};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
-
+    this.onDisConnect = this.onDisConnect.bind(this);
   }
 
   onDisConnect() {
@@ -71,7 +71,7 @@ class App extends React.Component {
     })
 
     // open the request with the verb and the url
-    xhr.open('POST', 'http://ec2-34-222-109-163.us-west-2.compute.amazonaws.com:9000/users')
+    xhr.open('POST', `http://${window.location.hostname}:9000/users`)
     xhr.setRequestHeader('Content-Type', 'application/json');
     // send the request
     xhr.send(JSON.stringify({
@@ -82,8 +82,10 @@ class App extends React.Component {
 
   componentDidMount() {
     const creationTime = localStorage.getItem('time');
-    if (creationTime && new Date().getTime() - creationTime < 10000) {
+    if (creationTime && new Date().getTime() - creationTime < 3600000) {
       const id = localStorage.getItem('id');
+      console.log('saved id: ');
+      console.log(id);
       this.setState({id});
     }
   }
