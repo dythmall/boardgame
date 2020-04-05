@@ -20,6 +20,8 @@ router.post('/', function(req, res, next) {
 
   if (id === 'existing') {
     return res.sendStatus(409);
+  } else if(id === 'gameInPlace') {
+    return res.sendStatus(410)
   }
 
   res.send({id});

@@ -13,6 +13,10 @@ class App extends React.Component {
 
   }
 
+  onDisConnect() {
+    this.setState({id: null});
+  }
+
   handleInput(event) {
     this.setState({
       [event.target.name]: event.target.value
@@ -56,6 +60,8 @@ class App extends React.Component {
         this.printError('Wrong password!')
       } else if (xhr.status === 409) {
         this.printError(`${this.state.name} is already in use.`);
+      } else if (xhr.status === 410) {
+        this.printError('Game already in place');
       } else if (xhr.status === 200) {
         console.log(xhr.responseText);
         this.setState({
@@ -74,10 +80,18 @@ class App extends React.Component {
     }));
   }
 
+  componentDidMount() {
+    const creationTime = localStorage.getItem('time');
+    if (creationTime && new Date().getTime() - creationTime < 10000) {
+      const id = localStorage.getItem('id');
+      this.setState({id});
+    }
+  }
+
   render() {
     if (this.state.id) {
       return (
-        <GameBoard id={this.state.id}/>
+        <GameBoard id={this.state.id} onDisConnect={this.onDisConnect}/>
       )
     }
     return (

@@ -10,11 +10,12 @@ export default class Communicator {
             this.socket.emit('myping', {id});
         });
 
-        this.socket.on('user.joined', (users) => {
-            console.log('joined');
-            this.eventListener('user.joined', users);
-        });
-
         this.socket.on('disconnect', () => this.eventListener('disconnected'));
+
+        this.socket.on('game', (data) => this.eventListener('game', data));
+    }
+
+    start() {
+        this.socket.emit('start');
     }
 }

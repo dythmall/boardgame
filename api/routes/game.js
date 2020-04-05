@@ -1,9 +1,32 @@
 const {v4} = require('uuid');
+const gameInit = require('./gameInit');
 
 let socket;
 const currentUsers = {};
 const users = new Map();
-const gameState = 'waiting';
+let gameState = 'waiting';
+let gameVariables = {};
+
+const createCards = () => {
+    const result = [];
+    for (let i = 0; i < 150; i++) {
+        result.push(i);
+    }
+    return result;
+};
+
+const sendGameInfo = () => {
+    users.forEach((value) => {
+        value.socket.emit('game', {
+            currentUsers,
+            gameState,
+            cards: value.cards,
+            isKing: value.isKing,
+            order: gameVariables.order,
+            storyTeller: gameVariables.storyTeller
+        });
+    });
+}
 
 const setSocket = (sock) => {
     socket = sock;
@@ -18,7 +41,7 @@ const setSocket = (sock) => {
                 } else {
                     users.get(data.id).socket = currentSocket;
                     currentSocket.gameId = data.id;
-                    users.forEach((value) => value.socket.emit('user.joined', currentUsers));
+                    sendGameInfo();
                 }
             };
         })());
@@ -30,11 +53,25 @@ const setSocket = (sock) => {
                 const user = users.get(s.gameId);
                 users.delete(s.gameId);
                 if (user && user.name) {
-                    currentUsers[user.name] = null;
+                    delete currentUsers[user.name];
                 }
+                if (user && user.isKing) {
+                    // nominate a king
+                }
+                sendGameInfo();
             }
         });
+
+        s.on('start', () => {
+            gameState = 'storyTeller';
+            prepareGame();
+        })
     });
+};
+
+const prepareGame = () => {
+    gameVariables = gameInit.initialize(users, currentUsers);
+    sendGameInfo();
 };
 
 const isUniqueName = (name) => !currentUsers[name];
@@ -47,10 +84,15 @@ const setName = (name) => {
         return 'existing';
     }
     const id = v4();
+    let isKing = false;
+    if (users.size === 0) {
+        isKing = true;
+    }
     currentUsers[name] = id;
     users.set(id, {
         name,
-        socket: null
+        socket: null,
+        isKing
     });
     return currentUsers[name];
 }
