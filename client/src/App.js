@@ -71,7 +71,7 @@ class App extends React.Component {
     })
 
     // open the request with the verb and the url
-    xhr.open('POST', 'http://localhost:9000/users')
+    xhr.open('POST', 'http://ec2-34-222-109-163.us-west-2.compute.amazonaws.com:9000/users')
     xhr.setRequestHeader('Content-Type', 'application/json');
     // send the request
     xhr.send(JSON.stringify({
