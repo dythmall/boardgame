@@ -31,6 +31,7 @@ export default class Communicator {
     }
 
     send(data) {
+        Object.assign(data || {}, { gameId: this.id });
         this.socket.emit('game', data);
     }
 }
