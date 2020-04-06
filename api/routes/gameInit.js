@@ -1,7 +1,7 @@
 
 const createCards = () => {
     const result = [];
-    for (let i = 0; i < 150; i++) {
+    for (let i = 1; i < 150; i++) {
         result.push(i);
     }
     return result;
@@ -31,10 +31,15 @@ const takeCards = (num, cards) => cards.splice(0, num)
 
 const initialize = (users, currentUsers) => {
     const gameVariables = new Map();
-    gameVariables.shuffledCards = shuffleCards(createCards());
-    assignCards(users, gameVariables.shuffledCards);
-    gameVariables.order = createOrder(currentUsers);
-    gameVariables.storyTeller = currentUsers[gameVariables.order[0]];
+    gameVariables.set('shuffledCards', shuffleCards(createCards()));
+    assignCards(users, gameVariables.get('shuffledCards'));
+    gameVariables.set('order', createOrder(currentUsers));
+    gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]]);
+    gameVariables.set('storyTellerCard', null);
+    gameVariables.set('participantCards', {});
+    gameVariables.set('cardsInTheMiddle', []);
+    gameVariables.set('votes', {});
+    gameVariables.set('voted', []);
     return gameVariables;
 }
 
@@ -42,5 +47,6 @@ const createOrder = (users) => Object.keys(users);
 
 module.exports = {
     initialize,
-    takeCards
+    takeCards,
+    shuffleCards
 }

@@ -5,7 +5,7 @@ let socket;
 let currentUsers = {};
 const users = new Map();
 let gameState = 'waiting';
-let gameVariables = {};
+let gameVariables = new Map();
 
 const createCards = () => {
     const result = [];
@@ -22,8 +22,11 @@ const sendGameInfo = () => {
             gameState,
             cards: value.cards,
             isKing: value.isKing,
-            order: gameVariables.order,
-            storyTeller: gameVariables.storyTeller
+            order: gameVariables.get('order'),
+            storyTeller: gameVariables.get('storyTeller'),
+            cardsInTheMiddle: gameVariables.get('cardsInTheMiddle'),
+            votes: gameVariables.get('votes'),
+            voted: gameVariables.get('voted'),
         });
     });
 }
@@ -74,16 +77,63 @@ const setSocket = (sock) => {
             });
             users.clear();
             currentUsers = {};
-            gameVariables = {};
+            gameVariables.clear();
         });
 
         s.on('game', (data) => {
             if (gameState === 'storyTeller') {
-                gameVariables.storyTellerCard = data.selectedCard;
+                const cards = gameVariables.get('participantCards');
+                cards[data.selectedCard] = { id: s.gameId, votes: [] };
+
+                gameVariables.set('storyTellerCard', data.selectedCard);
                 const storyTeller = users.get(s.gameId);
                 storyTeller.cards = storyTeller.cards.filter(card => card !== data.selectedCard)
-                storyTeller.cards.push(gameInit.takeCards(1, gameVariables.shuffledCards));
+                storyTeller.cards.push(gameInit.takeCards(1, gameVariables.get('shuffledCards')));
                 gameState = 'participants';
+                gameVariables.get('cardsInTheMiddle').push(-1);
+                sendGameInfo();
+            } else if (gameState === 'participants') {
+                const cards = gameVariables.get('participantCards');
+                cards[data.selectedCard] = { id: s.gameId, votes: [] };
+                const user = users.get(s.gameId);
+                user.cards = user.cards.filter(card => card !== data.selectedCard);
+                user.cards.push(gameInit.takeCards(1, gameVariables.get('shuffledCards')));
+                const middleCards = gameVariables.get('cardsInTheMiddle');
+                middleCards.push(-1);
+                if (middleCards.length === users.size) {
+                    gameState = 'voting';
+                    const participantCards = Object.keys(gameVariables.get('participantCards'));
+                    gameVariables.set('cardsInTheMiddle', gameInit.shuffleCards(participantCards));
+                }
+                sendGameInfo();
+            } else if (gameState === 'voting') {
+                console.log(data);
+                const cards = gameVariables.get('participantCards');
+                cards[data.selectedCard].votes.push({
+                    id: s.gameId,
+                    name: users.get(s.gameId).name
+                });
+                const votes = Object.keys(cards).reduce((map, card) => {
+                    map[card] = cards[card].votes;
+                    return map;
+                }, {});
+                gameVariables.set('votes', votes);
+                gameVariables.get('voted').push(s.gameId);
+                if (gameVariables.get('voted').length === users.size - 1) {
+                    gameState = 'tally';
+                }
+                sendGameInfo();
+            } else if (gameState === 'tally') {
+                gameVariables.set('votes', {});
+                gameVariables.set('voted', []);
+                const order = gameVariables.get('order');
+                const currentStoryTeller = order.splice(0, 1);
+                order.push(...currentStoryTeller);
+                gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]]);
+                gameVariables.set('storyTellerCard', null);
+                gameVariables.set('participantCards', {});
+                gameVariables.set('cardsInTheMiddle', []);
+                gameState = 'storyTeller';
                 sendGameInfo();
             }
         });
