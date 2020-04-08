@@ -69,7 +69,7 @@ export default class GameBoard extends React.Component {
             return []
         }
         const votes = this.state.votes[card] || [];
-        return votes.map(vote => vote.name);
+        return votes.map(vote => vote.name).join(', ');
     }
 
     didVote() {

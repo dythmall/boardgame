@@ -146,7 +146,8 @@ describe('voting', () => {
 });
 
 describe('calculate scores', () => {
-    it('gives 2 to everyone when story teller has all votes', () => {
+
+    const setupUsers = () => {
         const users = new Map();
         users.set('id', {
             id: 'id',
@@ -166,6 +167,11 @@ describe('calculate scores', () => {
             name: 'tellerUser',
             score: 0
         });
+        return users;
+    }
+
+    it('gives 2 to everyone when story teller has all votes', () => {
+        const users = setupUsers();
 
         const votes = {
             10: [
@@ -182,5 +188,53 @@ describe('calculate scores', () => {
         expect(users.get('storyTeller').score).to.equal(0);
         expect(users.get('id').score).to.equal(2);
         expect(users.get('second').score).to.equal(2);
+    })
+
+    it('gives 2 to everyone when story teller has no vote', () => {
+        const users = setupUsers();
+
+        const votes = {
+            10: [
+            ]
+        };
+        gameinit.calculateScores('storyTeller', votes, 10, users);
+
+        expect(users.get('storyTeller').score).to.equal(0);
+        expect(users.get('id').score).to.equal(2);
+        expect(users.get('second').score).to.equal(2);
+    })
+
+    it('gives 3 to story teller and an user with a correct vote', () => {
+        const users = setupUsers();
+
+        const votes = {
+            10: [
+                {
+                    id: 'id'
+                }
+            ]
+        };
+        gameinit.calculateScores('storyTeller', votes, 10, users);
+
+        expect(users.get('storyTeller').score).to.equal(3);
+        expect(users.get('id').score).to.equal(3);
+        expect(users.get('second').score).to.equal(0);
+    })
+
+    it('gives 1 to card owners', () => {
+        const users = setupUsers();
+
+        const votes = {
+            10: [
+                {
+                    id: 'id'
+                }
+            ]
+        };
+        gameinit.calculateScores('storyTeller', votes, 10, users);
+
+        expect(users.get('storyTeller').score).to.equal(3);
+        expect(users.get('id').score).to.equal(3);
+        expect(users.get('second').score).to.equal(0);
     })
 });
