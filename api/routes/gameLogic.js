@@ -110,6 +110,7 @@ const tally = (gameVariables, currentUsers) => {
     gameVariables.set('storyTellerCard', null);
     gameVariables.set('participantCards', {});
     gameVariables.set('cardsInTheMiddle', []);
+    gameVariables.set('played', []);
     gameVariables.set('gameState', 'storyTeller');
 }
 
