@@ -27,6 +27,7 @@ const sendGameInfo = () => {
             cardsInTheMiddle: gameVariables.get('cardsInTheMiddle'),
             votes: gameVariables.get('votes'),
             voted: gameVariables.get('voted'),
+            played: gameVariables.get('played')
         });
     });
 }
