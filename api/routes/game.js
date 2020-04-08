@@ -27,7 +27,8 @@ const sendGameInfo = () => {
             cardsInTheMiddle: gameVariables.get('cardsInTheMiddle'),
             votes: gameVariables.get('votes'),
             voted: gameVariables.get('voted'),
-            played: gameVariables.get('played')
+            played: gameVariables.get('played'),
+            scores: gameVariables.get('scores'),
         });
     });
 }
@@ -98,7 +99,7 @@ const setSocket = (sock) => {
                 gameState = gameVariables.get('gameState');
                 sendGameInfo();
             } else if (gameState === 'tally') {
-                gameLogic.tally(gameVariables, currentUsers);
+                gameLogic.tally(gameVariables, currentUsers, users);
                 gameState = gameVariables.get('gameState');
                 sendGameInfo();
             }
@@ -125,7 +126,8 @@ const setName = (name) => {
         name,
         socket: null,
         isKing,
-        score: 0
+        score: 0,
+        id: id
     });
     return currentUsers[name];
 }

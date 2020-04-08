@@ -115,6 +115,15 @@ export default class GameBoard extends React.Component {
             <div className="message">{message}</div>
         )
     }
+
+    getOrderText() {
+        const order = this.state.order;
+        const scores = this.state.scores;
+
+        const nameWithScores = order.map(name => `${name} (${scores[name]})`);
+        return nameWithScores.join(' - ');
+    }
+
     renderBoard() {
         const isStoryTeller = this.state.storyTeller === this.state.id;
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
@@ -128,7 +137,7 @@ export default class GameBoard extends React.Component {
         return (
             <div className="split">
                 <div className="info" onClick={() => this.communicator.end()}>{this.strings.getText('end')}</div>
-                <div className="info">{this.strings.getText('order')}{this.state.order.join(' - ')}</div>
+                <div className="info">{this.strings.getText('order')}{this.getOrderText()}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>

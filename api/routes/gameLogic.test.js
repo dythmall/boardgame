@@ -183,7 +183,7 @@ describe('calculate scores', () => {
                 }
             ]
         };
-        gameinit.calculateScores('storyTeller', votes, 10, users);
+        gameinit.calculateScores('storyTeller', votes, 10, users, {});
 
         expect(users.get('storyTeller').score).to.equal(0);
         expect(users.get('id').score).to.equal(2);
@@ -197,7 +197,7 @@ describe('calculate scores', () => {
             10: [
             ]
         };
-        gameinit.calculateScores('storyTeller', votes, 10, users);
+        gameinit.calculateScores('storyTeller', votes, 10, users, {});
 
         expect(users.get('storyTeller').score).to.equal(0);
         expect(users.get('id').score).to.equal(2);
@@ -214,7 +214,7 @@ describe('calculate scores', () => {
                 }
             ]
         };
-        gameinit.calculateScores('storyTeller', votes, 10, users);
+        gameinit.calculateScores('storyTeller', votes, 10, users, {});
 
         expect(users.get('storyTeller').score).to.equal(3);
         expect(users.get('id').score).to.equal(3);
@@ -227,14 +227,22 @@ describe('calculate scores', () => {
         const votes = {
             10: [
                 {
+                    id: 'second'
+                }
+            ],
+            11: [
+                {
                     id: 'id'
                 }
             ]
         };
-        gameinit.calculateScores('storyTeller', votes, 10, users);
+        gameinit.calculateScores('storyTeller', votes, 10, users, {
+            11: { id: 'second', votes: ['id']},
+            10: { id: 'storyTeller', votes: ['second']}
+        });
 
         expect(users.get('storyTeller').score).to.equal(3);
-        expect(users.get('id').score).to.equal(3);
-        expect(users.get('second').score).to.equal(0);
+        expect(users.get('id').score).to.equal(0);
+        expect(users.get('second').score).to.equal(4);
     })
 });

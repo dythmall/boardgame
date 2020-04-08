@@ -43,6 +43,7 @@ const initialize = (users, currentUsers) => {
     gameVariables.set('voted', []);
     gameVariables.set('gameState', 'storyTeller');
     gameVariables.set('numVotes', 1);
+    gameVariables.set('scores', getDisplayableScores(users));
     return gameVariables;
 }
 
@@ -100,7 +101,12 @@ const voting = (users, gameVariables, data) => {
     }
 }
 
-const tally = (gameVariables, currentUsers) => {
+const tally = (gameVariables, currentUsers, users) => {
+    calculateScores(
+        gameVariables.get('storyTeller'), gameVariables.get('votes'), gameVariables.get('storyTellerCard'),
+        users, gameVariables.get('participantCards')
+    );
+    gameVariables.set('scores', getDisplayableScores(users));
     gameVariables.set('votes', {});
     gameVariables.set('voted', []);
     const order = gameVariables.get('order');
@@ -114,11 +120,13 @@ const tally = (gameVariables, currentUsers) => {
     gameVariables.set('gameState', 'storyTeller');
 }
 
-const calculateScores = (storyTellerId, votes, storyTellerCard, users) => {
+const calculateScores = (storyTellerId, votes, storyTellerCard, users, participantCards) => {
     const numPlayers = users.size;
     const numVotedForStoryTeller = votes[storyTellerCard].length;
     if (numVotedForStoryTeller === 0 || numVotedForStoryTeller === numPlayers - 1) {
         users.forEach(user => {
+            console.log(user.id);
+            console.log(storyTellerId);
             if (user.id !== storyTellerId) {
                 user.score += 2;
             }
@@ -130,14 +138,24 @@ const calculateScores = (storyTellerId, votes, storyTellerCard, users) => {
         });
     }
 
-    Object.keys(votes).forEach(cardId => {
+    Object.keys(participantCards).forEach(cardId => {
         if (+cardId !== storyTellerCard) {
-            votes[cardId].forEach(vote => {
-                users.get(vote.id).score += 1;
-            })
+            const cardInfo = participantCards[cardId];
+            users.get(cardInfo.id).score += cardInfo.votes.length;
+            if (cardInfo.votes.indexOf(cardInfo.id) !== -1) {
+                users.get(cardInfo.id).score -= 1;
+            }
         }
-    });
+    })
 }
+
+const getDisplayableScores = (users) => {
+    const scores = {};
+    users.forEach(user => {
+        scores[user.name] = user.score;
+    });
+    return scores;
+};
 
 const createOrder = (users) => Object.keys(users);
 
