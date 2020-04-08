@@ -164,7 +164,9 @@ export default class GameBoard extends React.Component {
                         }}>
                             <img className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)}></img>
                         </a>
+                        <div>
                         {' ' + this.getVotes(card)}
+                        </div>
                     </li>
                 ))}
                 </ul>
@@ -177,8 +179,8 @@ export default class GameBoard extends React.Component {
             <ul>
             {cards.map(card => (
                 <li key={card}>
-                        <img src={this.getCardUrl(card)}></img>
-                        {this.getVotes(card)}
+                        <img src={this.getCardUrl(card)}/>
+                        <div>{this.getVotes(card)}</div> 
                 </li>
             ))}
           </ul>
