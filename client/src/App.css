@@ -12,6 +12,7 @@ body {
 .info {
   padding: 20px;
 }
+
 .message {
   padding: 20px;
   background-color: #f44336; /* Red */
@@ -28,9 +29,33 @@ ul li {
   display:inline;
 }
 
-li.active {
-  list-style-position:inside;
-  border: 1px solid black;
+img.active {
+  border: 4px solid #f44336;
+}
+
+Submit my Form
+
+button.submitButton
+{
+  padding: 10px 15px 11px !important;
+  font-size: 18px !important;
+  background-color: #57d6c7;
+  font-weight: bold;
+  text-shadow: 1px 1px #57D6C7;
+  color: #ffffff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: 1px solid #57D6C7;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+li img {
+  width: 300px;
+  border-radius: 5%;
 }
 
 .hidden {

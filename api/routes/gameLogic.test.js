@@ -42,7 +42,7 @@ describe('storyTellerTurn', () => {
         gameinit.storyTellerTurn(users, gameVariables, data);
 
         expect(gameVariables.get('participantCards')).to.deep.equal({4: {id: 'id', votes:[]}});
-        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-1]);
+        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-4]);
         expect(gameVariables.get('storyTellerCard')).to.equal(4);
 
         expect(gameVariables.get('shuffledCards')).to.deep.equal([]);
@@ -65,13 +65,14 @@ describe('participants', () => {
         gameVariables.set('cardsInTheMiddle', []);
         gameVariables.set('shuffledCards', [10]);
         gameVariables.set('gameState', 'participants');
+        gameVariables.set('played', []);
 
         const data = {selectedCard: '4', gameId: 'id'};
 
         gameinit.participants(users, gameVariables, data);
 
         expect(gameVariables.get('participantCards')).to.deep.equal({4: {id: 'id', votes:[]}});
-        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-1]);
+        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-4]);
 
         expect(gameVariables.get('shuffledCards')).to.deep.equal([]);
         expect(users.get('id').cards).to.deep.equal([1, 2, 3, 10]);
@@ -88,9 +89,10 @@ describe('participants', () => {
         });
         const gameVariables = new Map();
         gameVariables.set('participantCards', {10: {id: 'storyTeller', votes:[]}});
-        gameVariables.set('cardsInTheMiddle', [-1]);
+        gameVariables.set('cardsInTheMiddle', [-4]);
         gameVariables.set('shuffledCards', [10, 100]);
         gameVariables.set('gameState', 'participants');
+        gameVariables.set('played', []);
 
         const data = {selectedCard: '4', gameId: 'id'};
 
@@ -141,4 +143,44 @@ describe('voting', () => {
 
         expect(gameVariables.get('gameState')).to.equal('tally');
     });
+});
+
+describe('calculate scores', () => {
+    it('gives 2 to everyone when story teller has all votes', () => {
+        const users = new Map();
+        users.set('id', {
+            id: 'id',
+            cards: [4, 1, 2, 3],
+            name: 'user',
+            score: 0
+        });
+        users.set('second', {
+            id: 'second',
+            cards: [],
+            name: 'user2',
+            score: 0
+        })
+        users.set('storyTeller', {
+            id: 'storyTeller',
+            cards: [5, 6, 7, 8],
+            name: 'tellerUser',
+            score: 0
+        });
+
+        const votes = {
+            10: [
+                {
+                    id: 'id'
+                },
+                {
+                    id: 'second'
+                }
+            ]
+        };
+        gameinit.calculateScores('storyTeller', votes, 10, users);
+
+        expect(users.get('storyTeller').score).to.equal(0);
+        expect(users.get('id').score).to.equal(2);
+        expect(users.get('second').score).to.equal(2);
+    })
 });

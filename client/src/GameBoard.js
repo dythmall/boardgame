@@ -145,27 +145,27 @@ export default class GameBoard extends React.Component {
     getCardUrl(card) {
         if (card < 0) {
             return process.env.PUBLIC_URL + '/logo192.png';
-	}
-	return process.env.PUBLIC_URL + `/${card}.png`; 
+	    }
+	    return process.env.PUBLIC_URL + `/${card}.jpeg`; 
     }
 
     rederYourHands(cards) {
         return (
             <div>
+                <div><button className="submitButton" type="button" onClick={this.onSubmit}>카드내기</button></div>
                 <ul>
                 {cards.map(card => (
-                    <li className={this.state.selectedCard === card ? 'active' : ''} key={card}>
+                    <li key={card}>
                         <a href="#" onClick={(e) => {
                             e.preventDefault();
                             this.onSelectMyHand(card);
                         }}>
-                            <img src={this.getCardUrl(card)}></img>
+                            <img className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)}></img>
                         </a>
                         {' ' + this.getVotes(card)}
                     </li>
                 ))}
                 </ul>
-                <div><a href="#" onClick={this.onSubmit}>Submit</a></div>
             </div>
         )
     }
@@ -176,7 +176,6 @@ export default class GameBoard extends React.Component {
             {cards.map(card => (
                 <li key={card}>
                         <img src={this.getCardUrl(card)}></img>
-                        {card}
                         {this.getVotes(card)}
                 </li>
             ))}

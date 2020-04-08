@@ -114,7 +114,8 @@ const tally = (gameVariables, currentUsers) => {
     gameVariables.set('gameState', 'storyTeller');
 }
 
-const calculateScores = (storyTellerId, votes, storyTellerCard, numPlayers, users) => {
+const calculateScores = (storyTellerId, votes, storyTellerCard, users) => {
+    const numPlayers = users.size;
     const numVotedForStoryTeller = votes[storyTellerCard].length;
     if (numVotedForStoryTeller === 0 || numVotedForStoryTeller === numPlayers - 1) {
         users.forEach(user => {
@@ -130,8 +131,8 @@ const calculateScores = (storyTellerId, votes, storyTellerCard, numPlayers, user
     }
 
     Object.keys(votes).forEach(cardId => {
-        if (cardId !== storyTellerId) {
-            votes[vote].forEach(vote => {
+        if (+cardId !== storyTellerCard) {
+            votes[cardId].forEach(vote => {
                 users.get(vote.id).score += 1;
             })
         }
@@ -146,4 +147,5 @@ module.exports = {
     participants,
     voting,
     tally,
+    calculateScores
 }
