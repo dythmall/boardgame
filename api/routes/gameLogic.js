@@ -41,6 +41,7 @@ const initialize = (users, currentUsers) => {
     gameVariables.set('votes', {});
     gameVariables.set('voted', []);
     gameVariables.set('gameState', 'storyTeller');
+    gameVariables.set('numVotes', 1);
     return gameVariables;
 }
 
@@ -110,11 +111,28 @@ const tally = (gameVariables, currentUsers) => {
     gameVariables.set('gameState', 'storyTeller');
 }
 
-const calculateScores = (votes, storyTellerCard, numPlayers) => {
+const calculateScores = (storyTellerId, votes, storyTellerCard, numPlayers, users) => {
     const numVotedForStoryTeller = votes[storyTellerCard].length;
     if (numVotedForStoryTeller === 0 || numVotedForStoryTeller === numPlayers - 1) {
-
+        users.forEach(user => {
+            if (user.id !== storyTellerId) {
+                user.score += 2;
+            }
+        });
+    } else {
+        users.get(storyTellerId).score += 3;
+        votes[storyTellerCard].forEach(vote => {
+            users.get(vote.id).score += 3;
+        });
     }
+
+    Object.keys(votes).forEach(cardId => {
+        if (cardId !== storyTellerId) {
+            votes[vote].forEach(vote => {
+                users.get(vote.id).score += 1;
+            })
+        }
+    });
 }
 
 const createOrder = (users) => Object.keys(users);
