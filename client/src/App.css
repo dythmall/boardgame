@@ -20,6 +20,10 @@ body {
   margin-bottom: 15px;
 }
 
+a {
+  color: #42c8f5;
+}
+
 .split {
   position: relative;
   height: 100vh;

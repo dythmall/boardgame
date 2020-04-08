@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Communicator from './Communicator';
+import Strings from './Strings';
 
 export default class GameBoard extends React.Component {
     constructor(props) {
@@ -8,7 +9,7 @@ export default class GameBoard extends React.Component {
         this.state = {
             id: props.id,
             currentUsers: {},
-            gameState: 'waiting'
+            gameState: 'waiting',
         };
         this.onDisConnect = props.onDisConnect;
         this.eventListener = this.eventListener.bind(this);
@@ -16,6 +17,7 @@ export default class GameBoard extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onSelectMyHand = this.onSelectMyHand.bind(this);
         this.onTally = this.onTally.bind(this);
+        this.strings = new Strings(props.language);
     }
 
     componentDidMount() {
@@ -84,29 +86,29 @@ export default class GameBoard extends React.Component {
         let message = '';
         if (this.state.gameState === 'storyTeller') {
             if (this.state.storyTeller === this.state.id) {
-                message = '카드를 고르고 카드에 대한 설명을 해주세요~~';
+                message = this.strings.getText('storyTeller');
             } else {
-                message = 'Story teller가 고민중 입니다.'
+                message = this.strings.getText('nonStoryTeller');
             }
         } else if (this.state.gameState === 'participants') {
             if (this.state.storyTeller === this.state.id) {
-                message = '다들 카드를 고르고 있습니다.';
+                message = this.strings.getText('waitParticipants');
             } else {
-                message = 'Story teller의 설명과 비슷한 카드를 골라 주세요~~'
+                message = this.strings.getText('participants');
             } 
         } else if (this.state.gameState === 'voting') {
             if (this.state.storyTeller === this.state.id) {
-                message = '투표중 입니다.';
+                message = this.strings.getText('voting');;
             } else if (this.didVote()) {
-                message = '투표를 하셨습니다.'
+                message = this.strings.getText('voted');
             } else {
-                message = '어떤 카드가 Story teller 카드인지 골라 주세요~~'
+                message = this.strings.getText('vote');
             }
         } else if (this.state.gameState === 'tally') {
             if (this.state.storyTeller === this.state.id) {
-                message = '내 카드가 어떤 카드인지 알려 주세요~~';
+                message = this.strings.getText('tell');
             } else {
-                message = '당신의 선택이 맞았을까요???'
+                message = this.strings.getText('isItCorrect');
             }
         }
         return (
@@ -125,8 +127,8 @@ export default class GameBoard extends React.Component {
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
         return (
             <div className="split">
-                <div className="info" onClick={() => this.communicator.end()}>종료하기</div>
-                <div className="info">순서: {this.state.order.join(' - ')}</div>
+                <div className="info" onClick={() => this.communicator.end()}>{this.strings.getText('end')}</div>
+                <div className="info">{this.strings.getText('order')}{this.state.order.join(' - ')}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
@@ -134,7 +136,7 @@ export default class GameBoard extends React.Component {
                     {isVoting ? this.rederYourHands(this.state.cardsInTheMiddle) : this.renderNonActionableHand(this.state.cardsInTheMiddle)}
                 </div>
                 <div className={!hideTop ? "bottomPane hidden" : "bottomPane"}>
-                    <h1>내 카드</h1>
+                    <h1>{this.strings.getText('myHand')}</h1>
                     {isActionable ? this.rederYourHands(this.state.cards) : this.renderNonActionableHand(this.state.cards)}
                 </div>
             </div>
@@ -152,7 +154,7 @@ export default class GameBoard extends React.Component {
     rederYourHands(cards) {
         return (
             <div>
-                <div><button className="submitButton" type="button" onClick={this.onSubmit}>카드내기</button></div>
+                <div><button className="submitButton" type="button" onClick={this.onSubmit}>{this.strings.getText('submit')}</button></div>
                 <ul>
                 {cards.map(card => (
                     <li key={card}>

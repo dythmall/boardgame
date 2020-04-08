@@ -3,14 +3,28 @@ import ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import GameBoard from './GameBoard';
 import './App.css';
+import Strings from './Strings';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {name: '', password: '', id: null};
+    this.state = {name: '', password: '', id: null, language: 'en'};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.onDisConnect = this.onDisConnect.bind(this);
+    this.changeLanguage = this.changeLanguage.bind(this);
+    this.strings = new Strings(this.state.language);
+  }
+
+  changeLanguage(e) {
+    e.preventDefault();
+    if (this.state.language === 'en') {
+      this.strings = new Strings('ko');
+      this.setState({ language: 'ko' });
+    } else {
+      this.strings = new Strings('en');
+      this.setState({ language: 'en' });
+    }
   }
 
   onDisConnect() {
@@ -93,20 +107,26 @@ class App extends React.Component {
   render() {
     if (this.state.id) {
       return (
-        <GameBoard id={this.state.id} onDisConnect={this.onDisConnect}/>
+        <GameBoard id={this.state.id} onDisConnect={this.onDisConnect} language={this.state.language} />
       )
     }
+
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
+          <div><a href="#" onClick={this.changeLanguage}>{ this.state.language === 'en' ? '한글' : 'English' }</a></div>
           <form onSubmit={this.handleSubmit}>
+            <div>
             <label>
-              Name: <input value={this.state.name} type="text" name="name" onChange={this.handleInput} />
+              {this.strings.getText('name')} <input value={this.state.name} type="text" name="name" onChange={this.handleInput} />
             </label>
+            </div>
+            <div>
             <label>
-              Password: <input value={this.state.password} type="password" name="password" onChange={this.handleInput} />
+            {this.strings.getText('password')} <input value={this.state.password} type="password" name="password" onChange={this.handleInput} />
             </label>
+            </div>
             <input type="submit" value="Submit" />
           </form>
           <div id="error"></div>
