@@ -121,7 +121,10 @@ const setName = (name) => {
     if (users.size === 0) {
         isKing = true;
     }
-    currentUsers[name] = id;
+    currentUsers[name] = {
+        id,
+        color: createColor()
+    };
     users.set(id, {
         name,
         socket: null,
@@ -129,7 +132,17 @@ const setName = (name) => {
         score: 0,
         id: id
     });
-    return currentUsers[name];
+    return currentUsers[name].id;
+}
+
+const createColor = () => {
+    var hex = '#';
+    var range = 'ABCDEF0123456789';
+
+    for (var i = 0; i < 6; i++ ) {
+      hex += range.charAt(Math.floor(Math.random() * range.length));
+    }
+    return hex;
 }
 
 module.exports = {

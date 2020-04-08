@@ -119,9 +119,9 @@ export default class GameBoard extends React.Component {
     getOrderText() {
         const order = this.state.order;
         const scores = this.state.scores;
-
-        const nameWithScores = order.map(name => `${name} (${scores[name]})`);
-        return nameWithScores.join(' - ');
+        const currentUsers = this.state.currentUsers;
+        const nameWithScores = order.map(name => <font color={currentUsers[name].color}>{name}  ({scores[name]})  </font>);
+        return nameWithScores;
     }
 
     renderBoard() {
@@ -129,9 +129,9 @@ export default class GameBoard extends React.Component {
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
         const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played());
-	console.log('played: ' + this.played());
+	    console.log('played: ' + this.played());
         console.log('isActionable: ' + isActionable);
-	const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
+	    const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
         return (
@@ -203,9 +203,16 @@ export default class GameBoard extends React.Component {
                 <header className="App-header">
                     <a href="#" onClick={this.onGameStart}>{(this.state.isKing) ? 'Start' : ''}</a>
                     <h1>Waiting for people to join...</h1>
-                    <div>{Object.keys(this.state.currentUsers).join(', ')}</div>
+                    <div>{this.renderUsers()}</div>
                 </header>
             </div>
         );
+    }
+
+    renderUsers() {
+        const currentUsers = this.state.currentUsers;
+        return Object.keys(currentUsers).map(userName => {
+            return <font color={currentUsers[userName].color}>{userName}  </font>;
+        });
     }
 }

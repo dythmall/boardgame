@@ -34,7 +34,7 @@ const initialize = (users, currentUsers) => {
     gameVariables.set('shuffledCards', shuffleCards(createCards()));
     assignCards(users, gameVariables.get('shuffledCards'));
     gameVariables.set('order', createOrder(currentUsers));
-    gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]]);
+    gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]].id);
     gameVariables.set('storyTellerCard', null);
     gameVariables.set('participantCards', {});
     gameVariables.set('played', []);
@@ -112,7 +112,7 @@ const tally = (gameVariables, currentUsers, users) => {
     const order = gameVariables.get('order');
     const currentStoryTeller = order.splice(0, 1);
     order.push(...currentStoryTeller);
-    gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]]);
+    gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]].id);
     gameVariables.set('storyTellerCard', null);
     gameVariables.set('participantCards', {});
     gameVariables.set('cardsInTheMiddle', []);
