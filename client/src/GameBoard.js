@@ -76,6 +76,10 @@ export default class GameBoard extends React.Component {
         return (this.state.voted.indexOf(this.state.id) !== -1);
     }
 
+    played() {
+        return (this.state.played.indexOf(this.state.id) !== -1);
+    }
+    
     renderInformation() {
         let message = '';
         if (this.state.gameState === 'storyTeller') {
@@ -113,7 +117,7 @@ export default class GameBoard extends React.Component {
         const isStoryTeller = this.state.storyTeller === this.state.id;
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
-        const isActionable = isStoryTeller ? isStoryTellerTurn : isNonStoryTellerTurn;
+        const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played();
         const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
