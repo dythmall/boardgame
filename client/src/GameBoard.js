@@ -76,6 +76,39 @@ export default class GameBoard extends React.Component {
         return (this.state.voted.indexOf(this.state.id) !== -1);
     }
 
+    renderInformation() {
+        let message = '';
+        if (this.state.gameState === 'storyTeller') {
+            if (this.state.storyTeller === this.state.id) {
+                message = '카드를 고르고 카드에 대한 설명을 해주세요~~';
+            } else {
+                message = 'Story teller가 고민중 입니다.'
+            }
+        } else if (this.state.gameState === 'participants') {
+            if (this.state.storyTeller === this.state.id) {
+                message = '다들 카드를 고르고 있습니다.';
+            } else {
+                message = 'Story teller의 설명과 비슷한 카드를 골라 주세요~~'
+            } 
+        } else if (this.state.gameState === 'voting') {
+            if (this.state.storyTeller === this.state.id) {
+                message = '투표중 입니다.';
+            } else if (this.didVote()) {
+                message = '투표를 하셨습니다.'
+            } else {
+                message = '어떤 카드가 Story teller 카드인지 골라 주세요~~'
+            }
+        } else if (this.state.gameState === 'tally') {
+            if (this.state.storyTeller === this.state.id) {
+                message = '내 카드가 어떤 카드인지 알려 주세요~~';
+            } else {
+                message = '당신의 선택이 맞았을까요???'
+            }
+        }
+        return (
+            <div className="message">{message}</div>
+        )
+    }
     renderBoard() {
         const isStoryTeller = this.state.storyTeller === this.state.id;
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
@@ -83,18 +116,19 @@ export default class GameBoard extends React.Component {
         const isActionable = isStoryTeller ? isStoryTellerTurn : isNonStoryTellerTurn;
         const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
+        const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
         return (
             <div className="split">
-                <div className="topPane">
-                    <h1 onClick={() => this.communicator.end()}>End</h1>
-                    <div>{this.state.order.join(' - ')}</div>
-                    <div>{isStoryTeller ? 'You are story teller' : ''}</div>
-                    <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
+                <div className="info" onClick={() => this.communicator.end()}>종료하기</div>
+                <div className="info">순서: {this.state.order.join(' - ')}</div>
+                {this.renderInformation()}
+                <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
+                <div className={hideTop ? "topPane hidden" : "topPane"}>
                     <h1>Gameboard</h1>
                     {isVoting ? this.rederYourHands(this.state.cardsInTheMiddle) : this.renderNonActionableHand(this.state.cardsInTheMiddle)}
                 </div>
-                <div className="bottomPane">
-                    <h1>Your hands</h1>
+                <div className={!hideTop ? "bottomPane hidden" : "bottomPane"}>
+                    <h1>내 카드</h1>
                     {isActionable ? this.rederYourHands(this.state.cards) : this.renderNonActionableHand(this.state.cards)}
                 </div>
             </div>
