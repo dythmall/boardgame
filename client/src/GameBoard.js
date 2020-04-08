@@ -118,7 +118,9 @@ export default class GameBoard extends React.Component {
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
         const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played());
-        const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
+	console.log('played: ' + this.played());
+        console.log('isActionable: ' + isActionable);
+	const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
         return (
@@ -140,6 +142,13 @@ export default class GameBoard extends React.Component {
         );
     }
 
+    getCardUrl(card) {
+        if (card < 0) {
+            return process.env.PUBLIC_URL + '/logo192.png';
+	}
+	return process.env.PUBLIC_URL + `/${card}.png`; 
+    }
+
     rederYourHands(cards) {
         return (
             <div>
@@ -150,8 +159,7 @@ export default class GameBoard extends React.Component {
                             e.preventDefault();
                             this.onSelectMyHand(card);
                         }}>
-                            <img src={process.env.PUBLIC_URL + '/logo192.png'}></img>
-                            {card}
+                            <img src={this.getCardUrl(card)}></img>
                         </a>
                         {' ' + this.getVotes(card)}
                     </li>
@@ -167,7 +175,7 @@ export default class GameBoard extends React.Component {
             <ul>
             {cards.map(card => (
                 <li key={card}>
-                        <img src={process.env.PUBLIC_URL + '/logo192.png'}></img>
+                        <img src={this.getCardUrl(card)}></img>
                         {card}
                         {this.getVotes(card)}
                 </li>
