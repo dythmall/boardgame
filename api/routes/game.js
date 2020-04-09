@@ -17,6 +17,9 @@ const createCards = () => {
 
 const sendGameInfo = () => {
     users.forEach((value) => {
+        if (value.socket == null) {
+            return;
+        }
         value.socket.emit('game', {
             currentUsers,
             gameState,
