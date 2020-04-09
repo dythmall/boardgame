@@ -18,8 +18,8 @@ const strings = {
         myHand: '내 카드',
         reset: '새로운 게임',
         start: '시작하자~~',
-        waiting: '다른 사람들을 기다리고 있습니다...'
-
+        waiting: '다른 사람들을 기다리고 있습니다...',
+        next: '다음 턴',
     },
     'en': {
         name: 'Name',
@@ -41,6 +41,7 @@ const strings = {
         reset: 'New game',
         start: 'Start',
         waiting: 'Waiting for others to join...',
+        next: 'Next round',
     }
 }
 

@@ -115,7 +115,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <div><a href="#" onClick={this.changeLanguage}>{ this.state.language === 'en' ? '한글' : 'English' }</a></div>
+          <div><button onClick={this.changeLanguage}>{ this.state.language === 'en' ? '한글' : 'English' }</button></div>
           <form onSubmit={this.handleSubmit}>
             <div>
               <input placeholder={this.strings.getText('name')} value={this.state.name} type="text" name="name" onChange={this.handleInput} />

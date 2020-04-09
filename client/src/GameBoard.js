@@ -154,7 +154,7 @@ export default class GameBoard extends React.Component {
                 </div>
                 <div className="info">{this.strings.getText('order')}{this.getOrderText()}</div>
                 {this.renderInformation()}
-                <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
+                <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : ''}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
                     <h1>Gameboard</h1>
                     {isVoting ? this.rederYourHands(this.state.cardsInTheMiddle) : this.renderNonActionableHand(this.state.cardsInTheMiddle)}
@@ -182,12 +182,10 @@ export default class GameBoard extends React.Component {
                 <ul>
                     {cards.map(card => (
                         <li key={card}>
-                            <a href="#" onClick={(e) => {
+                            <img onClick={(e) => {
                                 e.preventDefault();
                                 this.onSelectMyHand(card);
-                            }}>
-                                <img className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)}></img>
-                            </a>
+                            }} className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)} alt=''></img>
                             <div>
                                 {' ' + this.getVotes(card)}
                             </div>
@@ -203,7 +201,7 @@ export default class GameBoard extends React.Component {
             <ul>
                 {cards.map(card => (
                     <li key={card}>
-                        <img src={this.getCardUrl(card)} />
+                        <img className="nonactive" src={this.getCardUrl(card)} alt='' />
                         <div>{this.getVotes(card)}</div>
                     </li>
                 ))}
@@ -214,7 +212,6 @@ export default class GameBoard extends React.Component {
     renderWaiting() {
         return (
             <div className="App">
-
                 <header className="App-header">
                     {(this.state.isKing) ? <button onClick={this.onGameStart}>{this.strings.getText('start')}</button> : ''}
                     <h1>{this.strings.getText('waiting')}</h1>
