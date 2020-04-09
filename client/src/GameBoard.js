@@ -134,7 +134,7 @@ export default class GameBoard extends React.Component {
         console.log('isActionable: ' + isActionable);
 	    const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
-        const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
+        const hideTop = isStoryTellerTurn || (isStoryTeller ? false : (isNonStoryTellerTurn && !this.played()));
         return (
             <div className="split">
                 <div className="info" onClick={() => this.communicator.end()}>{this.strings.getText('end')}</div>
