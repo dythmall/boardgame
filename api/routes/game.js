@@ -52,8 +52,7 @@ const setSocket = (sock) => {
         })());
 
         s.on('disconnect', () => {
-            console.log('disconnected');
-            console.log(s.gameId);
+            console.log('disconnected: ' + s.gameId);
             if (gameState === 'waiting') {
                 const user = users.get(s.gameId);
                 users.delete(s.gameId);

@@ -125,8 +125,6 @@ const calculateScores = (storyTellerId, votes, storyTellerCard, users, participa
     const numVotedForStoryTeller = votes[storyTellerCard].length;
     if (numVotedForStoryTeller === 0 || numVotedForStoryTeller === numPlayers - 1) {
         users.forEach(user => {
-            console.log(user.id);
-            console.log(storyTellerId);
             if (user.id !== storyTellerId) {
                 user.score += 2;
             }
@@ -141,10 +139,11 @@ const calculateScores = (storyTellerId, votes, storyTellerCard, users, participa
     Object.keys(participantCards).forEach(cardId => {
         if (+cardId !== storyTellerCard) {
             const cardInfo = participantCards[cardId];
-            users.get(cardInfo.id).score += cardInfo.votes.length;
-            if (cardInfo.votes.indexOf(cardInfo.id) !== -1) {
-                users.get(cardInfo.id).score -= 1;
-            }
+            cardInfo.votes.forEach(vote => {
+                if (vote.id !== cardInfo.id) {
+                    users.get(cardInfo.id).score += 1;
+                }
+            })
         }
     })
 }

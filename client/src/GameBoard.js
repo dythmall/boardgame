@@ -71,7 +71,8 @@ export default class GameBoard extends React.Component {
             return []
         }
         const votes = this.state.votes[card] || [];
-        return votes.map(vote => vote.name).join(', ');
+        const currentUsers = this.state.currentUsers;
+        return (this.state.gameState === 'tally') ? votes.map(vote => <font color={currentUsers[vote.name].color}>{vote.name} </font>) : '';
     }
 
     didVote() {
@@ -155,7 +156,7 @@ export default class GameBoard extends React.Component {
 
     getCardUrl(card) {
         if (card < 0) {
-            return process.env.PUBLIC_URL + '/logo192.png';
+            return process.env.PUBLIC_URL + '/back.png';
 	    }
 	    return process.env.PUBLIC_URL + `/${card}.jpeg`; 
     }
