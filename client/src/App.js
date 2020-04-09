@@ -85,7 +85,7 @@ class App extends React.Component {
     })
 
     // open the request with the verb and the url
-    xhr.open('POST', `http://${window.location.hostname}:9000/users`)
+    xhr.open('POST', `http://${window.location.hostname}/users`)
     xhr.setRequestHeader('Content-Type', 'application/json');
     // send the request
     xhr.send(JSON.stringify({

@@ -4,7 +4,7 @@ export default class Communicator {
     constructor(id, eventListener, host) {
         this.id = id;
         this.eventListener = eventListener;
-        this.socket = socketIOClient(`${host}:9000`);
+        this.socket = socketIOClient(`${host}`);
         this.socket.on('connect', () => {
             console.log('connected');
             this.socket.emit('myping', { id });

@@ -12,7 +12,7 @@ router.post('/', function(req, res, next) {
   const name = req.body.name;
   const pass = req.body.password;
 
-  if (pass !== 'JesusIsKing') {
+  if (!(pass === 'JesusIsKing' || pass === 'Amazon@123')) {
     return res.sendStatus(401);
   }
 
