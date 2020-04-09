@@ -10,14 +10,21 @@ body {
 }
 
 .info {
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .message {
-  padding: 20px;
-  background-color: #f44336; /* Red */
-  color: white;
-  margin-bottom: 15px;
+  padding: 10px 15px 11px !important;
+  font-size: 18px !important;
+  background-color: #f87a13;
+  font-weight: bold;
+  text-shadow: 1px 1px rgb(214, 163, 87);
+  border: 1px solid rgb(214, 148, 87);
+  color: #ffffff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 a {
@@ -26,7 +33,10 @@ a {
 
 .split {
   position: relative;
+  padding: 20px;
   height: 100vh;
+  background: url('/background.png') no-repeat center fixed;
+  background-size: cover;
 }
 
 ul li {
@@ -34,10 +44,11 @@ ul li {
 }
 
 img.active {
-  border: 4px solid #f44336;
+  outline: 4px solid #f44336;
+  outline-offset: -4px;
 }
 
-button.submitButton
+button
 {
   padding: 10px 15px 11px !important;
   font-size: 18px !important;
@@ -53,6 +64,39 @@ button.submitButton
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+button.resetButton {
+  background-color: #f87a13;
+  text-shadow: 1px 1px rgb(214, 163, 87);
+  border: 1px solid rgb(214, 148, 87);
+}
+
+button.resetButton:hover {
+	background-color:#ff7300;
+}
+
+button.endButton {
+  background-color: #f54242;
+  text-shadow: 1px 1px rgb(214, 87, 87);
+  border: 1px solid rgb(214, 87, 87);
+}
+
+button.endButton:hover {
+	background-color:#fa1818;
+}
+
+button.endButton:hover {
+	background-color:#fa1818;
+}
+
+button:hover {
+	background-color:#18c1fa;
+}
+
+button:active {
+	position:relative;
+	top:1px;
 }
 
 li img {
@@ -73,7 +117,7 @@ li img {
 .bottomPane {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 50%;
 }
 
 .App-logo {
@@ -109,4 +153,14 @@ li img {
   to {
     transform: rotate(360deg);
   }
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }

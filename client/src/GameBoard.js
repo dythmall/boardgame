@@ -17,6 +17,8 @@ export default class GameBoard extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onSelectMyHand = this.onSelectMyHand.bind(this);
         this.onTally = this.onTally.bind(this);
+        this.onEnd = this.onEnd.bind(this);
+        this.onReset = this.onReset.bind(this);
         this.strings = new Strings(props.language);
     }
 
@@ -50,14 +52,14 @@ export default class GameBoard extends React.Component {
     }
 
     onSelectMyHand(card) {
-        this.setState({selectedCard: card});
+        this.setState({ selectedCard: card });
         console.log(card);
     }
 
     onSubmit(e) {
         e.preventDefault();
         if (this.state.selectedCard) {
-            this.communicator.send({selectedCard: this.state.selectedCard});
+            this.communicator.send({ selectedCard: this.state.selectedCard });
         }
     }
 
@@ -73,6 +75,11 @@ export default class GameBoard extends React.Component {
         const votes = this.state.votes[card] || [];
         const currentUsers = this.state.currentUsers;
         return (this.state.gameState === 'tally') ? votes.map(vote => <font color={currentUsers[vote.name].color}>{vote.name} </font>) : '';
+    }
+
+    onEnd(e) {
+        e.preventDefault();
+        this.communicator.end();
     }
 
     didVote() {
@@ -96,7 +103,7 @@ export default class GameBoard extends React.Component {
                 message = this.strings.getText('waitParticipants');
             } else {
                 message = this.strings.getText('participants');
-            } 
+            }
         } else if (this.state.gameState === 'voting') {
             if (this.state.storyTeller === this.state.id) {
                 message = this.strings.getText('voting');;
@@ -125,19 +132,26 @@ export default class GameBoard extends React.Component {
         return nameWithScores;
     }
 
+    onReset() {
+        this.communicator.reset();
+    }
+
     renderBoard() {
         const isStoryTeller = this.state.storyTeller === this.state.id;
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
         const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played());
-	    console.log('played: ' + this.played());
+        console.log('played: ' + this.played());
         console.log('isActionable: ' + isActionable);
-	    const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
+        const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : (isNonStoryTellerTurn && !this.played()));
         return (
             <div className="split">
-                <div className="info" onClick={() => this.communicator.end()}>{this.strings.getText('end')}</div>
+                <div className="info">
+                    <button className="endButton" onClick={this.onEnd}>{this.strings.getText('end')}</button>
+                    {this.state.isKing ? <button className="resetButton" onClick={this.onReset}>{this.strings.getText('reset')}</button> : ''}
+                </div>
                 <div className="info">{this.strings.getText('order')}{this.getOrderText()}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <a href="#" onClick={this.onTally}>Next Round</a> : ''}</div>
@@ -157,8 +171,8 @@ export default class GameBoard extends React.Component {
     getCardUrl(card) {
         if (card < 0) {
             return process.env.PUBLIC_URL + '/back.png';
-	    }
-	    return process.env.PUBLIC_URL + `/${card}.jpeg`; 
+        }
+        return process.env.PUBLIC_URL + `/${card}.jpeg`;
     }
 
     rederYourHands(cards) {
@@ -166,19 +180,19 @@ export default class GameBoard extends React.Component {
             <div>
                 <div><button className="submitButton" type="button" onClick={this.onSubmit}>{this.strings.getText('submit')}</button></div>
                 <ul>
-                {cards.map(card => (
-                    <li key={card}>
-                        <a href="#" onClick={(e) => {
-                            e.preventDefault();
-                            this.onSelectMyHand(card);
-                        }}>
-                            <img className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)}></img>
-                        </a>
-                        <div>
-                        {' ' + this.getVotes(card)}
-                        </div>
-                    </li>
-                ))}
+                    {cards.map(card => (
+                        <li key={card}>
+                            <a href="#" onClick={(e) => {
+                                e.preventDefault();
+                                this.onSelectMyHand(card);
+                            }}>
+                                <img className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)}></img>
+                            </a>
+                            <div>
+                                {' ' + this.getVotes(card)}
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </div>
         )
@@ -187,13 +201,13 @@ export default class GameBoard extends React.Component {
     renderNonActionableHand(cards) {
         return (
             <ul>
-            {cards.map(card => (
-                <li key={card}>
-                        <img src={this.getCardUrl(card)}/>
-                        <div>{this.getVotes(card)}</div> 
-                </li>
-            ))}
-          </ul>
+                {cards.map(card => (
+                    <li key={card}>
+                        <img src={this.getCardUrl(card)} />
+                        <div>{this.getVotes(card)}</div>
+                    </li>
+                ))}
+            </ul>
         )
     }
 
@@ -202,8 +216,8 @@ export default class GameBoard extends React.Component {
             <div className="App">
 
                 <header className="App-header">
-                    <a href="#" onClick={this.onGameStart}>{(this.state.isKing) ? 'Start' : ''}</a>
-                    <h1>Waiting for people to join...</h1>
+                    {(this.state.isKing) ? <button onClick={this.onGameStart}>{this.strings.getText('start')}</button> : ''}
+                    <h1>{this.strings.getText('waiting')}</h1>
                     <div>{this.renderUsers()}</div>
                 </header>
             </div>

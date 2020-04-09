@@ -118,14 +118,10 @@ class App extends React.Component {
           <div><a href="#" onClick={this.changeLanguage}>{ this.state.language === 'en' ? '한글' : 'English' }</a></div>
           <form onSubmit={this.handleSubmit}>
             <div>
-            <label>
-              {this.strings.getText('name')} <input value={this.state.name} type="text" name="name" onChange={this.handleInput} />
-            </label>
+              <input placeholder={this.strings.getText('name')} value={this.state.name} type="text" name="name" onChange={this.handleInput} />
             </div>
             <div>
-            <label>
-            {this.strings.getText('password')} <input value={this.state.password} type="password" name="password" onChange={this.handleInput} />
-            </label>
+              <input placeholder={this.strings.getText('password')} value={this.state.password} type="password" name="password" onChange={this.handleInput} />
             </div>
             <input type="submit" value="Submit" />
           </form>

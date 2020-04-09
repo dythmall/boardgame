@@ -1,7 +1,7 @@
 const strings = {
     'ko': {
-        name: '너의 이름은: ',
-        password: '우리만의 비밀: ',
+        name: '너의 이름은',
+        password: '우리만의 비밀',
         storyTeller: '카드를 고르고 카드에 대한 설명을 해주세요~~',
         nonStoryTeller: 'Story teller가 고민중 입니다.',
         waitParticipants: '다들 카드를 고르고 있습니다.',
@@ -16,10 +16,14 @@ const strings = {
         end: '종료하기',
         order: '순서: ',
         myHand: '내 카드',
+        reset: '새로운 게임',
+        start: '시작하자~~',
+        waiting: '다른 사람들을 기다리고 있습니다...'
+
     },
     'en': {
-        name: 'Name: ',
-        password: 'Password: ',
+        name: 'Name',
+        password: 'Password',
         storyTeller: 'Pick a card and explain it.',
         nonStoryTeller: 'Story teller is picking a card.',
         waitParticipants: 'Wait till everyone picks a card.',
@@ -34,7 +38,9 @@ const strings = {
         end: 'End',
         order: 'Order: ',
         myHand: 'My hands',
-
+        reset: 'New game',
+        start: 'Start',
+        waiting: 'Waiting for others to join...',
     }
 }
 

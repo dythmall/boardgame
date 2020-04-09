@@ -10,7 +10,7 @@ const createCards = () => {
 const shuffleCards = (cards) => {
     for (let i = cards.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-    
+
         // swap elements array[i] and array[j]
         // we use "destructuring assignment" syntax to achieve that
         // you'll find more details about that syntax in later chapters
@@ -31,6 +31,9 @@ const takeCards = (num, cards) => cards.splice(0, num)
 
 const initialize = (users, currentUsers) => {
     const gameVariables = new Map();
+    users.forEach(user => {
+        user.score = 0;
+    });
     gameVariables.set('shuffledCards', shuffleCards(createCards()));
     assignCards(users, gameVariables.get('shuffledCards'));
     gameVariables.set('order', createOrder(currentUsers));
@@ -127,6 +130,8 @@ const calculateScores = (storyTellerId, votes, storyTellerCard, users, participa
         users.forEach(user => {
             if (user.id !== storyTellerId) {
                 user.score += 2;
+            } else {
+                user.score -= 3;
             }
         });
     } else {

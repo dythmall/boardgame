@@ -1,4 +1,4 @@
-const {v4} = require('uuid');
+const { v4 } = require('uuid');
 const gameLogic = require('./gameLogic');
 
 let socket;
@@ -6,15 +6,7 @@ let currentUsers = {};
 const users = new Map();
 let gameState = 'waiting';
 let gameVariables = new Map();
-
-const createCards = () => {
-    const result = [];
-    for (let i = 0; i < 150; i++) {
-        result.push(i);
-    }
-    return result;
-};
-
+let loggedIn = {};
 const sendGameInfo = () => {
     users.forEach((value) => {
         if (value.socket == null) {
@@ -44,13 +36,34 @@ const setSocket = (sock) => {
             const currentSocket = s;
             return (data) => {
                 console.log(data);
-                if (!users.has(data.id)) {
+                console.log(loggedIn);
+                const name = loggedIn[data.id];
+                if (!name) {
                     currentSocket.disconnect();
-                } else {
-                    users.get(data.id).socket = currentSocket;
-                    currentSocket.gameId = data.id;
-                    sendGameInfo();
+                    return;
                 }
+                const existingUser = users.get(data.id);
+                if (existingUser) {
+                    existingUser.socket = currentSocket;
+                } else {
+                    let isKing = false;
+                    if (users.size === 0) {
+                        isKing = true;
+                    }
+                    currentUsers[name] = {
+                        id: data.id,
+                        color: createColor()
+                    };
+                    users.set(data.id, {
+                        name,
+                        socket: currentSocket,
+                        isKing,
+                        score: 0,
+                        id: data.id
+                    });
+                }
+                currentSocket.gameId = data.id;
+                sendGameInfo();
             };
         })());
 
@@ -59,11 +72,16 @@ const setSocket = (sock) => {
             if (gameState === 'waiting') {
                 const user = users.get(s.gameId);
                 users.delete(s.gameId);
+                delete loggedIn[s.gameId];
                 if (user && user.name) {
                     delete currentUsers[user.name];
                 }
                 if (user && user.isKing) {
-                    // nominate a king
+                    const userIter = users.entries().next();
+                    if (!userIter.done) {
+                        const [index, nextUser] = userIter.value;
+                        nextUser['isKing'] = true;
+                    }
                 }
                 sendGameInfo();
             }
@@ -73,7 +91,7 @@ const setSocket = (sock) => {
             gameState = 'storyTeller';
             gameVariables = gameLogic.initialize(users, currentUsers);
             gameVariables.set('gameState', gameState);
-            sendGameInfo();        
+            sendGameInfo();
         });
 
         s.on('end', () => {
@@ -84,6 +102,12 @@ const setSocket = (sock) => {
             users.clear();
             currentUsers = {};
             gameVariables.clear();
+        });
+
+        s.on('reset', () => {
+            gameVariables = gameLogic.initialize(users, currentUsers);
+            gameState = gameVariables.get('gameState');
+            sendGameInfo();
         });
 
         s.on('game', (data) => {
@@ -119,30 +143,16 @@ const setName = (name) => {
         return 'existing';
     }
     const id = v4();
-    let isKing = false;
-    if (users.size === 0) {
-        isKing = true;
-    }
-    currentUsers[name] = {
-        id,
-        color: createColor()
-    };
-    users.set(id, {
-        name,
-        socket: null,
-        isKing,
-        score: 0,
-        id: id
-    });
-    return currentUsers[name].id;
+    loggedIn[id] = name;
+    return id;
 }
 
 const createColor = () => {
     var hex = '#';
     var range = 'ABCDEF0123456789';
 
-    for (var i = 0; i < 6; i++ ) {
-      hex += range.charAt(Math.floor(Math.random() * range.length));
+    for (var i = 0; i < 6; i++) {
+        hex += range.charAt(Math.floor(Math.random() * range.length));
     }
     return hex;
 }

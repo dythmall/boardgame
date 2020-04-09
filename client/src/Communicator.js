@@ -7,7 +7,7 @@ export default class Communicator {
         this.socket = socketIOClient(`${host}:9000`);
         this.socket.on('connect', () => {
             console.log('connected');
-            this.socket.emit('myping', {id});
+            this.socket.emit('myping', { id });
         });
 
         this.socket.on('disconnect', () => this.eventListener('disconnected'));
@@ -28,6 +28,10 @@ export default class Communicator {
 
     end() {
         this.socket.emit('end');
+    }
+
+    reset() {
+        this.socket.emit('reset');
     }
 
     send(data) {
