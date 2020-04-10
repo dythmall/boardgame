@@ -48,6 +48,14 @@ img.active {
   outline-offset: -4px;
 }
 
+.cardContainer {
+  position: relative;
+}
+
+ul {
+  padding: 0;
+}
+
 button
 {
   padding: 10px 15px 11px !important;
@@ -99,11 +107,23 @@ button:active {
 	top:1px;
 }
 
+button.submitButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
 li img {
   width: 300px;
   border-radius: 5%;
   padding: 5px;
+  margin-right: 5px;
   cursor: pointer;
+  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
 }
 
 img.nonactive {

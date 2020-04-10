@@ -194,17 +194,17 @@ export default class GameBoard extends React.Component {
     rederYourHands(cards) {
         return (
             <div>
-                <div><button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button></div>
                 <ul>
                     {cards.map(card => (
                         <li key={card}>
+                            <div className='cardContainer'>
                             <img onClick={(e) => {
                                 e.preventDefault();
                                 this.onSelectMyHand(card);
                             }} className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)} alt=''></img>
-                            <div>
-                                {' ' + this.getVotes(card)}
+                            {this.state.selectedCard === card ? <button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button> : ''}
                             </div>
+                            <div>{this.getVotes(card)}</div>
                         </li>
                     ))}
                 </ul>
@@ -217,7 +217,9 @@ export default class GameBoard extends React.Component {
             <ul>
                 {cards.map(card => (
                     <li key={card}>
+                        <div clasName='cardContainer'>
                         <img className="nonactive" src={this.getCardUrl(card)} alt='' />
+                        </div>
                         <div>{this.getVotes(card)}</div>
                     </li>
                 ))}
