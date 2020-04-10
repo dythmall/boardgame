@@ -217,7 +217,7 @@ export default class GameBoard extends React.Component {
             <ul>
                 {cards.map(card => (
                     <li key={card}>
-                        <div clasName='cardContainer'>
+                        <div className='cardContainer'>
                         <img className="nonactive" src={this.getCardUrl(card)} alt='' />
                         </div>
                         <div>{this.getVotes(card)}</div>
