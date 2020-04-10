@@ -22,6 +22,10 @@ export default class Communicator {
 
     }
 
+    disconnect() {
+        this.socket.disconnect();
+    }
+    
     start() {
         this.socket.emit('start');
     }

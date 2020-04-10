@@ -26,6 +26,10 @@ export default class GameBoard extends React.Component {
         this.communicator = new Communicator(this.state.id, this.eventListener, window.location.hostname);
     }
 
+    componentWillUnmount() {
+        this.communicator.disconnect();
+    }
+
     eventListener(message, value) {
         if (message === 'game') {
             if (value.gameState !== 'waiting') {
@@ -125,13 +129,18 @@ export default class GameBoard extends React.Component {
     }
 
     getOrderText() {
-        const order = this.state.order;
         const scores = this.state.scores;
+        const list = Object.keys(scores);
+        list.sort((a, b) => scores[b] - scores[a])
         const currentUsers = this.state.currentUsers;
-        const nameWithScores = order.map(name => <font color={currentUsers[name].color}>{name}  ({scores[name]})  </font>);
+        const nameWithScores = list.map(name => <font color={currentUsers[name].color}>{name}  ({scores[name]})  </font>);
         return nameWithScores;
     }
 
+    getStoryTellerText() {
+        const storyTeller = this.state.order[0];
+        return <font color={this.state.currentUsers[storyTeller].color}>{storyTeller}</font>;
+    }
     onReset() {
         this.communicator.reset();
     }
@@ -152,7 +161,7 @@ export default class GameBoard extends React.Component {
                     <button className="endButton" onClick={this.onEnd}>{this.strings.getText('end')}</button>
                     {this.state.isKing ? <button className="resetButton" onClick={this.onReset}>{this.strings.getText('reset')}</button> : ''}
                 </div>
-                <div className="info">{this.strings.getText('order')}{this.getOrderText()}</div>
+                <div className="info">{this.strings.getText('storyTellerIs')}{this.getStoryTellerText()}<br/>{this.getOrderText()}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : ''}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
@@ -175,10 +184,17 @@ export default class GameBoard extends React.Component {
         return process.env.PUBLIC_URL + `/${card}.jpeg`;
     }
 
+    getButtonText() {
+        const isStoryTeller = this.state.storyTeller === this.state.id;
+        const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
+
+        return isVoting ? this.strings.getText('voteSubmit') : this.strings.getText('submit');
+    }
+
     rederYourHands(cards) {
         return (
             <div>
-                <div><button className="submitButton" type="button" onClick={this.onSubmit}>{this.strings.getText('submit')}</button></div>
+                <div><button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button></div>
                 <ul>
                     {cards.map(card => (
                         <li key={card}>

@@ -1,5 +1,6 @@
 const strings = {
     'ko': {
+        storyTellerIs: 'Story Teller: ',
         name: '너의 이름은',
         password: '우리만의 비밀',
         storyTeller: '카드를 고르고 카드에 대한 설명을 해주세요~~',
@@ -22,6 +23,7 @@ const strings = {
         next: '다음 턴',
     },
     'en': {
+        storyTellerIs: 'Story Teller: ',
         name: 'Name',
         password: 'Password',
         storyTeller: 'Pick a card and explain it.',
