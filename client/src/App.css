@@ -189,3 +189,20 @@ input, select {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+.name {
+  text-shadow: black 1px 1px 3px;
+}
+
+.votes {
+  position: absolute;
+  width: 90%;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, .5);
+  border-radius: 4px;
+  font-size: 1.5em;
+  text-align: center;
+}

@@ -161,7 +161,7 @@ export default class GameBoard extends React.Component {
                     <button className="endButton" onClick={this.onEnd}>{this.strings.getText('end')}</button>
                     {this.state.isKing ? <button className="resetButton" onClick={this.onReset}>{this.strings.getText('reset')}</button> : ''}
                 </div>
-                <div className="info">{this.strings.getText('storyTellerIs')}{this.getStoryTellerText()}<br/>{this.getOrderText()}</div>
+                <div className="info name">{this.strings.getText('storyTellerIs')}{this.getStoryTellerText()}<br />{this.getOrderText()}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : ''}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
@@ -198,13 +198,14 @@ export default class GameBoard extends React.Component {
                     {cards.map(card => (
                         <li key={card}>
                             <div className='cardContainer'>
-                            <img onClick={(e) => {
-                                e.preventDefault();
-                                this.onSelectMyHand(card);
-                            }} className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)} alt=''></img>
-                            {this.state.selectedCard === card ? <button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button> : ''}
+                                <img onClick={(e) => {
+                                    e.preventDefault();
+                                    this.onSelectMyHand(card);
+                                }} className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)} alt=''></img>
+                                {this.state.selectedCard === card ? <button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button> : ''}
+                                <div className='name votes'>{this.getVotes(card)}</div>
                             </div>
-                            <div>{this.getVotes(card)}</div>
+
                         </li>
                     ))}
                 </ul>
@@ -218,9 +219,9 @@ export default class GameBoard extends React.Component {
                 {cards.map(card => (
                     <li key={card}>
                         <div className='cardContainer'>
-                        <img className="nonactive" src={this.getCardUrl(card)} alt='' />
+                            <img className="nonactive" src={this.getCardUrl(card)} alt='' />
+                            <div className='name votes'>{this.getVotes(card)}</div>
                         </div>
-                        <div>{this.getVotes(card)}</div>
                     </li>
                 ))}
             </ul>
