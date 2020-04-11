@@ -29,6 +29,7 @@ class App extends React.Component {
 
   onDisConnect() {
     this.setState({id: null});
+    this.restorePreviousId();
   }
 
   handleInput(event) {
@@ -94,14 +95,16 @@ class App extends React.Component {
     }));
   }
 
-  componentDidMount() {
+  restorePreviousId() {
     const creationTime = localStorage.getItem('time');
     if (creationTime && new Date().getTime() - creationTime < 3600000) {
       const id = localStorage.getItem('id');
-      console.log('saved id: ');
-      console.log(id);
       this.setState({id});
     }
+  }
+
+  componentDidMount() {
+    this.restorePreviousId();
   }
 
   render() {

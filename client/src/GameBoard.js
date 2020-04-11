@@ -78,7 +78,7 @@ export default class GameBoard extends React.Component {
         }
         const votes = this.state.votes[card] || [];
         const currentUsers = this.state.currentUsers;
-        return (this.state.gameState === 'tally') ? votes.map(vote => <font color={currentUsers[vote.name].color}>{vote.name} </font>) : '';
+        return (this.state.gameState === 'tally') ? votes.map(vote => <font color={currentUsers[vote.name].color}>{vote.name} </font>) : null;
     }
 
     onEnd(e) {
@@ -141,6 +141,7 @@ export default class GameBoard extends React.Component {
         const storyTeller = this.state.order[0];
         return <font color={this.state.currentUsers[storyTeller].color}>{storyTeller}</font>;
     }
+
     onReset() {
         this.communicator.reset();
     }
@@ -163,14 +164,14 @@ export default class GameBoard extends React.Component {
                 </div>
                 <div className="info name">{this.strings.getText('storyTellerIs')}{this.getStoryTellerText()}<br />{this.getOrderText()}</div>
                 {this.renderInformation()}
-                <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : ''}</div>
+                <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : null}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
                     <h1>Gameboard</h1>
-                    {isVoting ? this.rederYourHands(this.state.cardsInTheMiddle) : this.renderNonActionableHand(this.state.cardsInTheMiddle)}
+                    {this.rederYourHands(this.state.cardsInTheMiddle, isVoting)}
                 </div>
                 <div className={!hideTop ? "bottomPane hidden" : "bottomPane"}>
                     <h1>{this.strings.getText('myHand')}</h1>
-                    {isActionable ? this.rederYourHands(this.state.cards) : this.renderNonActionableHand(this.state.cards)}
+                    {this.rederYourHands(this.state.cards, isActionable)}
                 </div>
             </div>
 
@@ -191,18 +192,37 @@ export default class GameBoard extends React.Component {
         return isVoting ? this.strings.getText('voteSubmit') : this.strings.getText('submit');
     }
 
-    rederYourHands(cards) {
+    getCardClass(isActionable, card) {
+        if (!isActionable) {
+            return 'nonactive';
+        }
+        if (this.state.selectedCard === card) {
+            return 'active';
+        }
+        return '';
+    }
+
+    renderSubmitButton(isActionable, card) {
+        if (isActionable && this.state.selectedCard === card) {
+            return <button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button>;
+        }
+        return null;
+    }
+
+    rederYourHands(cards, isActionable) {
         return (
             <div>
                 <ul>
                     {cards.map(card => (
                         <li key={card}>
-                            <div className='cardContainer'>
-                                <img onClick={(e) => {
+                            <div className='cardContainer' key={card}>
+                                <img key={card} onClick={(e) => {
                                     e.preventDefault();
-                                    this.onSelectMyHand(card);
-                                }} className={this.state.selectedCard === card ? 'active' : ''} src={this.getCardUrl(card)} alt=''></img>
-                                {this.state.selectedCard === card ? <button className="submitButton" type="button" onClick={this.onSubmit}>{this.getButtonText()}</button> : ''}
+                                    if (isActionable) {
+                                        this.onSelectMyHand(card);
+                                    }
+                                }} className={this.getCardClass(isActionable, card)} src={this.getCardUrl(card)} alt=''></img>
+                                {this.renderSubmitButton(isActionable, card)}
                                 <div className='name votes'>{this.getVotes(card)}</div>
                             </div>
 
@@ -213,28 +233,13 @@ export default class GameBoard extends React.Component {
         )
     }
 
-    renderNonActionableHand(cards) {
-        return (
-            <ul>
-                {cards.map(card => (
-                    <li key={card}>
-                        <div className='cardContainer'>
-                            <img className="nonactive" src={this.getCardUrl(card)} alt='' />
-                            <div className='name votes'>{this.getVotes(card)}</div>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        )
-    }
-
     renderWaiting() {
         return (
             <div className="App">
                 <header className="App-header">
                     {(this.state.isKing) ? <button onClick={this.onGameStart}>{this.strings.getText('start')}</button> : ''}
                     <h1>{this.strings.getText('waiting')}</h1>
-                    <div>{this.renderUsers()}</div>
+                    <div className='name'>{this.renderUsers()}</div>
                 </header>
             </div>
         );
