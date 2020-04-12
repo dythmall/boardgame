@@ -180,7 +180,7 @@ export default class GameBoard extends React.Component {
 
     getCardUrl(card) {
         if (card < 0) {
-            return process.env.PUBLIC_URL + '/back.jpeg';
+            return process.env.PUBLIC_URL + '/1.jpeg';
         }
         return process.env.PUBLIC_URL + `/${card}.jpeg`;
     }

@@ -1,7 +1,7 @@
-
+const numCards = 203;
 const createCards = () => {
     const result = [];
-    for (let i = 1; i < 150; i++) {
+    for (let i = 2; i < numCards; i++) {
         result.push(i);
     }
     return result;
