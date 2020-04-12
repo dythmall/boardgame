@@ -1,5 +1,8 @@
 const strings = {
     'ko': {
+        games: '게임 리스트',
+        gameName: '게임 이름은?',
+        create: '게임 만들기',
         storyTellerIs: 'Story Teller: ',
         name: '너의 이름은',
         password: '우리만의 비밀',
@@ -23,6 +26,9 @@ const strings = {
         next: '다음 턴',
     },
     'en': {
+        games: 'Game list',
+        gameName: 'Name of the game',
+        create: 'Create a new game',
         storyTellerIs: 'Story Teller: ',
         name: 'Name',
         password: 'Password',

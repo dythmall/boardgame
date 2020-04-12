@@ -11,12 +11,13 @@ router.post('/', function(req, res, next) {
 
   const name = req.body.name;
   const pass = req.body.password;
+  let id = req.body.id;
 
   if (!(pass === 'JesusIsKing' || pass === 'Amazon@123')) {
     return res.sendStatus(401);
   }
 
-  const id = game.setName(name);
+  id = game.setName(name, id);
 
   if (id === 'existing') {
     return res.sendStatus(409);
@@ -24,7 +25,8 @@ router.post('/', function(req, res, next) {
     return res.sendStatus(410)
   }
 
-  res.send({id});
+  const games = game.getGames();
+  res.send({id, games});
 });
 
 module.exports = router;

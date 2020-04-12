@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import Communicator from './Communicator';
 import Strings from './Strings';
 
 export default class GameBoard extends React.Component {
@@ -8,10 +7,11 @@ export default class GameBoard extends React.Component {
         super(props);
         this.state = {
             id: props.id,
+            gameId: props.gameId,
             currentUsers: {},
             gameState: 'waiting',
         };
-        this.onDisConnect = props.onDisConnect;
+        this.onDisconnect = props.onDisconnect;
         this.eventListener = this.eventListener.bind(this);
         this.onGameStart = this.onGameStart.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -20,14 +20,13 @@ export default class GameBoard extends React.Component {
         this.onEnd = this.onEnd.bind(this);
         this.onReset = this.onReset.bind(this);
         this.strings = new Strings(props.language);
+        this.communicator = props.communicator;
+        this.communicator.setIds({id: props.id, gameId: props.gameId});
+        this.communicator.setEventListener(this.eventListener);
     }
 
     componentDidMount() {
-        this.communicator = new Communicator(this.state.id, this.eventListener, window.location.hostname);
-    }
-
-    componentWillUnmount() {
-        this.communicator.disconnect();
+        this.communicator.join();
     }
 
     eventListener(message, value) {
@@ -35,14 +34,15 @@ export default class GameBoard extends React.Component {
             if (value.gameState !== 'waiting') {
                 localStorage.setItem('id', this.state.id);
                 localStorage.setItem('time', new Date().getTime());
+                localStorage.setItem('gameId', this.state.gameId);
             }
             console.log(value);
             this.setState(value);
         } else if (message === 'end') {
             localStorage.clear();
-            this.onDisConnect();
+            this.onDisconnect();
         } else if (message === 'disconnected') {
-            this.onDisConnect();
+            this.onDisconnect();
         }
     }
 

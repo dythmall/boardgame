@@ -47,17 +47,19 @@ const initialize = (users, currentUsers) => {
     gameVariables.set('gameState', 'storyTeller');
     gameVariables.set('numVotes', 1);
     gameVariables.set('scores', getDisplayableScores(users));
+    gameVariables.set('gameState', 'storyTeller');
+
     return gameVariables;
 }
 
 const assignSelectedCards = (gameVariables, data) => {
     const cards = gameVariables.get('participantCards');
     const selectedCard = +data.selectedCard;
-    cards[selectedCard] = { id: data.gameId, votes: [] };
+    cards[selectedCard] = { id: data.id, votes: [] };
 }
 
 const removeAndTakeCard = (users, data, shuffledCards) => {
-    const user = users.get(data.gameId);
+    const user = users.get(data.id);
     user.cards = user.cards.filter(card => card !== +data.selectedCard);
     user.cards.push(...takeCards(1, shuffledCards));
 }
@@ -76,7 +78,7 @@ const participants = (users, gameVariables, data) => {
     removeAndTakeCard(users, data, gameVariables.get('shuffledCards'));
     const middleCards = gameVariables.get('cardsInTheMiddle');
     middleCards.push(-data.selectedCard);
-    gameVariables.get('played').push(data.gameId);
+    gameVariables.get('played').push(data.id);
     if (middleCards.length === users.size) {
         gameVariables.set('gameState', 'voting');
         const participantCards = Object.keys(gameVariables.get('participantCards')).map(card => +card);
@@ -87,7 +89,7 @@ const participants = (users, gameVariables, data) => {
 const voting = (users, gameVariables, data) => {
     const cards = gameVariables.get('participantCards');
     const selectedCard = +data.selectedCard;
-    const id = data.gameId;
+    const id = data.id;
     cards[selectedCard].votes.push({
         id,
         name: users.get(id).name
