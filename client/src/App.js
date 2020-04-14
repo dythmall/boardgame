@@ -184,9 +184,9 @@ class App extends React.Component {
   makeGameList() {
     return this.state.games.map(game => {
       if (game.state === 'waiting') {
-        return <div key={game.id}><button onClick={(e) => this.joinGame(e, game)}>{game.name}: {game.users.join(' ')}</button></div>
+        return <div className='info' key={game.id}><button onClick={(e) => this.joinGame(e, game)}>{game.name}: {game.users.join(' ')}</button></div>
       }
-      return <div key={game.id}>{game.name}</div>;
+      return <div className='info' key={game.id}>{game.name}</div>;
     });
   }
 

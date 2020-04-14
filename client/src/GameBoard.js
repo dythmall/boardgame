@@ -57,7 +57,6 @@ export default class GameBoard extends React.Component {
 
     onSelectMyHand(card) {
         this.setState({ selectedCard: card });
-        console.log(card);
     }
 
     onSubmit(e) {
@@ -78,7 +77,7 @@ export default class GameBoard extends React.Component {
         }
         const votes = this.state.votes[card] || [];
         const currentUsers = this.state.currentUsers;
-        return (this.state.gameState === 'tally') ? votes.map(vote => <font color={currentUsers[vote.name].color}>{vote.name} </font>) : null;
+        return (this.state.gameState === 'tally') ? votes.map(vote => <font key={currentUsers[vote.name].id} color={currentUsers[vote.name].color}>{vote.name} </font>) : null;
     }
 
     onEnd(e) {
@@ -133,7 +132,7 @@ export default class GameBoard extends React.Component {
         const list = Object.keys(scores);
         list.sort((a, b) => scores[b] - scores[a])
         const currentUsers = this.state.currentUsers;
-        const nameWithScores = list.map(name => <font color={currentUsers[name].color}>{name}  ({scores[name]})  </font>);
+        const nameWithScores = list.map(name => <font key={currentUsers[name].id} color={currentUsers[name].color}>{name}  ({scores[name]})  </font>);
         return nameWithScores;
     }
 
@@ -151,8 +150,6 @@ export default class GameBoard extends React.Component {
         const isNonStoryTellerTurn = this.state.gameState === 'participants';
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
         const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played());
-        console.log('played: ' + this.played());
-        console.log('isActionable: ' + isActionable);
         const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
         const hideTop = isStoryTellerTurn || (isStoryTeller ? false : (isNonStoryTellerTurn && !this.played()));
@@ -248,7 +245,7 @@ export default class GameBoard extends React.Component {
     renderUsers() {
         const currentUsers = this.state.currentUsers;
         return Object.keys(currentUsers).map(userName => {
-            return <font color={currentUsers[userName].color}>{userName}  </font>;
+            return <font key={currentUsers[userName].id} color={currentUsers[userName].color}>{userName}  </font>;
         });
     }
 }
