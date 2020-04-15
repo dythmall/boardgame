@@ -1,4 +1,4 @@
-const numCards = 203;
+const numCards = 273;
 const createCards = () => {
     const result = [];
     for (let i = 2; i < numCards; i++) {
