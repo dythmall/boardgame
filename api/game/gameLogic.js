@@ -171,5 +171,6 @@ module.exports = {
     participants,
     voting,
     tally,
-    calculateScores
+    calculateScores,
+    numCards,
 }

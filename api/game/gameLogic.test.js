@@ -10,7 +10,7 @@ describe('initialize', () => {
         };
         const gameVariables = gameinit.initialize(users, currentUsers);
 
-        expect(gameVariables.get('shuffledCards').length).to.equal(144);
+        expect(gameVariables.get('shuffledCards').length).to.equal((gameinit.numCards-2) - 5);
     });
 
     it('should assign cards', () => {
@@ -37,7 +37,7 @@ describe('storyTellerTurn', () => {
         gameVariables.set('cardsInTheMiddle', []);
         gameVariables.set('shuffledCards', [10]);
 
-        const data = {selectedCard: '4', gameId: 'id'};
+        const data = {selectedCard: '4', id: 'id'};
 
         gameinit.storyTellerTurn(users, gameVariables, data);
 
@@ -67,7 +67,7 @@ describe('participants', () => {
         gameVariables.set('gameState', 'participants');
         gameVariables.set('played', []);
 
-        const data = {selectedCard: '4', gameId: 'id'};
+        const data = {selectedCard: '4', id: 'id'};
 
         gameinit.participants(users, gameVariables, data);
 
@@ -94,7 +94,7 @@ describe('participants', () => {
         gameVariables.set('gameState', 'participants');
         gameVariables.set('played', []);
 
-        const data = {selectedCard: '4', gameId: 'id'};
+        const data = {selectedCard: '4', id: 'id'};
 
         gameinit.participants(users, gameVariables, data);
 
@@ -126,7 +126,7 @@ describe('voting', () => {
         gameVariables.set('votes', {});
         gameVariables.set('voted', []);
 
-        const data = {selectedCard: '10', gameId: 'id'};
+        const data = {selectedCard: '10', id: 'id'};
 
         gameinit.voting(users, gameVariables, data);
 
@@ -185,7 +185,7 @@ describe('calculate scores', () => {
         };
         gameinit.calculateScores('storyTeller', votes, 10, users, {});
 
-        expect(users.get('storyTeller').score).to.equal(0);
+        expect(users.get('storyTeller').score).to.equal(-3);
         expect(users.get('id').score).to.equal(2);
         expect(users.get('second').score).to.equal(2);
     })
@@ -199,7 +199,7 @@ describe('calculate scores', () => {
         };
         gameinit.calculateScores('storyTeller', votes, 10, users, {});
 
-        expect(users.get('storyTeller').score).to.equal(0);
+        expect(users.get('storyTeller').score).to.equal(-3);
         expect(users.get('id').score).to.equal(2);
         expect(users.get('second').score).to.equal(2);
     })
