@@ -42,7 +42,7 @@ describe('storyTellerTurn', () => {
         gameinit.storyTellerTurn(users, gameVariables, data);
 
         expect(gameVariables.get('participantCards')).to.deep.equal({4: {id: 'id', votes:[]}});
-        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-4]);
+        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-1]);
         expect(gameVariables.get('storyTellerCard')).to.equal(4);
 
         expect(gameVariables.get('shuffledCards')).to.deep.equal([]);
@@ -72,7 +72,7 @@ describe('participants', () => {
         gameinit.participants(users, gameVariables, data);
 
         expect(gameVariables.get('participantCards')).to.deep.equal({4: {id: 'id', votes:[]}});
-        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-4]);
+        expect(gameVariables.get('cardsInTheMiddle')).to.deep.equal([-1]);
 
         expect(gameVariables.get('shuffledCards')).to.deep.equal([]);
         expect(users.get('id').cards).to.deep.equal([1, 2, 3, 10]);

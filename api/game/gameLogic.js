@@ -69,7 +69,7 @@ const storyTellerTurn = (users, gameVariables, data) => {
     assignSelectedCards(gameVariables, data);
     gameVariables.set('storyTellerCard', selectedCard);
     removeAndTakeCard(users, data, gameVariables.get('shuffledCards'));
-    gameVariables.get('cardsInTheMiddle').push(-selectedCard);
+    gameVariables.get('cardsInTheMiddle').push(-1);
     gameVariables.set('gameState', 'participants');
 }
 
@@ -77,7 +77,7 @@ const participants = (users, gameVariables, data) => {
     assignSelectedCards(gameVariables, data);
     removeAndTakeCard(users, data, gameVariables.get('shuffledCards'));
     const middleCards = gameVariables.get('cardsInTheMiddle');
-    middleCards.push(-data.selectedCard);
+    middleCards.push(-1);
     gameVariables.get('played').push(data.id);
     if (middleCards.length === users.size) {
         gameVariables.set('gameState', 'voting');
