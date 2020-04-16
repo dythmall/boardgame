@@ -71,13 +71,23 @@ export default class GameBoard extends React.Component {
         this.communicator.send();
     }
 
-    getVotes(card) {
+    renderVotes(card) {
+        if (this.state.gameState !== 'tally') {
+            return null;
+        }
         if (!this.state.votes) {
-            return []
+            return null;
         }
         const votes = this.state.votes[card] || [];
         const currentUsers = this.state.currentUsers;
-        return (this.state.gameState === 'tally') ? votes.map(vote => <font key={currentUsers[vote.name].id} color={currentUsers[vote.name].color}>{vote.name} </font>) : null;
+        return votes.map(vote => <font key={currentUsers[vote.name].id} color={currentUsers[vote.name].color}>{vote.name} </font>);
+    }
+
+    renderCardNumbers(number) {
+        if (this.state.gameState !== 'tally') {
+            return null;
+        }
+        return <div className="card_number name">{number}</div>
     }
 
     onEnd(e) {
@@ -127,7 +137,7 @@ export default class GameBoard extends React.Component {
         )
     }
 
-    getOrderText() {
+    renderStanding() {
         const scores = this.state.scores;
         const list = Object.keys(scores);
         list.sort((a, b) => scores[b] - scores[a])
@@ -136,7 +146,7 @@ export default class GameBoard extends React.Component {
         return nameWithScores;
     }
 
-    getStoryTellerText() {
+    renderStoryTeller() {
         const storyTeller = this.state.order[0];
         return <font color={this.state.currentUsers[storyTeller].color}>{storyTeller}</font>;
     }
@@ -147,23 +157,23 @@ export default class GameBoard extends React.Component {
 
     renderBoard() {
         const isStoryTeller = this.state.storyTeller === this.state.id;
-        const isNonStoryTellerTurn = this.state.gameState === 'participants';
+        const isNonStoryTellerTurn = this.state.gameState === 'participants' && !this.played();
         const isStoryTellerTurn = this.state.gameState === 'storyTeller';
-        const isActionable = isStoryTeller ? isStoryTellerTurn : (isNonStoryTellerTurn && !this.played());
+        const isActionable = isStoryTeller ? isStoryTellerTurn : isNonStoryTellerTurn;
         const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
         const isTallying = this.state.gameState === 'tally' && isStoryTeller;
-        const hideTop = isStoryTellerTurn || (isStoryTeller ? false : (isNonStoryTellerTurn && !this.played()));
+        const hideTop = isStoryTellerTurn || (isStoryTeller ? false : isNonStoryTellerTurn);
         return (
             <div className="split">
                 <div className="info">
                     <button className="endButton" onClick={this.onEnd}>{this.strings.getText('end')}</button>
-                    {this.state.isKing ? <button className="resetButton" onClick={this.onReset}>{this.strings.getText('reset')}</button> : ''}
+                    {this.state.isKing ? <button className="resetButton" onClick={this.onReset}>{this.strings.getText('reset')}</button> : null}
                 </div>
-                <div className="info name">{this.strings.getText('storyTellerIs')}{this.getStoryTellerText()}<br />{this.getOrderText()}</div>
+                <div className="info name">{this.strings.getText('storyTellerIs')}{this.renderStoryTeller()}<br />{this.renderStanding()}</div>
                 {this.renderInformation()}
                 <div>{isTallying ? <button onClick={this.onTally}>{this.strings.getText('next')}</button> : null}</div>
                 <div className={hideTop ? "topPane hidden" : "topPane"}>
-                    <h1>Gameboard</h1>
+                    <h1>{this.strings.getText('gameboard')}</h1>
                     {this.rederYourHands(this.state.cardsInTheMiddle, isVoting)}
                 </div>
                 <div className={!hideTop ? "bottomPane hidden" : "bottomPane"}>
@@ -185,7 +195,6 @@ export default class GameBoard extends React.Component {
     getButtonText() {
         const isStoryTeller = this.state.storyTeller === this.state.id;
         const isVoting = this.state.gameState === 'voting' && !isStoryTeller && !this.didVote();
-
         return isVoting ? this.strings.getText('voteSubmit') : this.strings.getText('submit');
     }
 
@@ -207,22 +216,23 @@ export default class GameBoard extends React.Component {
     }
 
     rederYourHands(cards, isActionable) {
+        let key = 1;
         return (
             <div>
                 <ul>
                     {cards.map(card => (
-                        <li key={card}>
-                            <div className='cardContainer' key={card}>
-                                <img key={card} onClick={(e) => {
+                        <li key={key}>
+                            <div className='cardContainer' key={key}>
+                                <img key={key} onClick={(e) => {
                                     e.preventDefault();
                                     if (isActionable) {
                                         this.onSelectMyHand(card);
                                     }
                                 }} className={this.getCardClass(isActionable, card)} src={this.getCardUrl(card)} alt=''></img>
                                 {this.renderSubmitButton(isActionable, card)}
-                                <div className='name votes'>{this.getVotes(card)}</div>
+                                <div className='name votes'>{this.renderVotes(card)}</div>
+                                {this.renderCardNumbers(key++)}
                             </div>
-
                         </li>
                     ))}
                 </ul>
@@ -234,7 +244,7 @@ export default class GameBoard extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    {(this.state.isKing) ? <button onClick={this.onGameStart}>{this.strings.getText('start')}</button> : ''}
+                    {(this.state.isKing) ? <button onClick={this.onGameStart}>{this.strings.getText('start')}</button> : null}
                     <h1>{this.strings.getText('waiting')}</h1>
                     <div className='name'>{this.renderUsers()}</div>
                 </header>

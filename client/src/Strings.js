@@ -24,6 +24,8 @@ const strings = {
         start: '시작하자~~',
         waiting: '다른 사람들을 기다리고 있습니다...',
         next: '다음 턴',
+        join: '참여하기',
+        gameboard: '게임보드',
     },
     'en': {
         games: 'Game list',
@@ -50,6 +52,8 @@ const strings = {
         start: 'Start',
         waiting: 'Waiting for others to join...',
         next: 'Next round',
+        join: 'Join',
+        gameboard: 'Gameboard',
     }
 }
 
