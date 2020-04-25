@@ -1,4 +1,5 @@
 const gameLogic = require('./gameLogic');
+const fs = require('fs');
 
 class Dixit {
     constructor(name, id) {
@@ -109,7 +110,9 @@ class Dixit {
     }
 
     start() {
-        this.gameVariables = gameLogic.initialize(this.users, this.currentUsers);
+        const cards = fs.readdirSync('./public/cards');
+        this.numCards = cards.length - 1;
+        this.gameVariables = gameLogic.initialize(this.users, this.currentUsers, this.numCards);
         this.sendGameInfo();
     }
 
@@ -125,7 +128,7 @@ class Dixit {
     }
 
     reset() {
-        this.gameVariables = gameLogic.initialize(this.users, this.currentUsers);
+        this.gameVariables = gameLogic.initialize(this.users, this.currentUsers, this.numCards);
         this.sendGameInfo();
     }
 

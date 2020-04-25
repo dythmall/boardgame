@@ -187,9 +187,9 @@ export default class GameBoard extends React.Component {
 
     getCardUrl(card) {
         if (card < 0) {
-            return process.env.PUBLIC_URL + '/1.jpeg';
+            return process.env.PUBLIC_URL + '/cards/0.jpeg';
         }
-        return process.env.PUBLIC_URL + `/${card}.jpeg`;
+        return process.env.PUBLIC_URL + `/cards/${card}.jpeg`;
     }
 
     getButtonText() {

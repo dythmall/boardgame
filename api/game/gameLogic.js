@@ -1,7 +1,6 @@
-const numCards = 273;
-const createCards = () => {
+const createCards = (numCards) => {
     const result = [];
-    for (let i = 2; i < numCards; i++) {
+    for (let i = 1; i < numCards; i++) {
         result.push(i);
     }
     return result;
@@ -29,12 +28,12 @@ const assignCards = (users, cards) => {
 
 const takeCards = (num, cards) => cards.splice(0, num)
 
-const initialize = (users, currentUsers) => {
+const initialize = (users, currentUsers, numCards) => {
     const gameVariables = new Map();
     users.forEach(user => {
         user.score = 0;
     });
-    gameVariables.set('shuffledCards', shuffleCards(createCards()));
+    gameVariables.set('shuffledCards', shuffleCards(createCards(numCards)));
     assignCards(users, gameVariables.get('shuffledCards'));
     gameVariables.set('order', createOrder(currentUsers));
     gameVariables.set('storyTeller', currentUsers[gameVariables.get('order')[0]].id);
@@ -172,5 +171,4 @@ module.exports = {
     voting,
     tally,
     calculateScores,
-    numCards,
 }
